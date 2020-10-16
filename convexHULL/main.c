@@ -5,6 +5,7 @@
 typedef struct _node{
 	int x;
 	int y;
+	struct _node *next;
 }node;
 
 typedef struct _edge{
@@ -18,12 +19,22 @@ void sortnodebyx(node *array,int size);
 void insertnode(node *array,node *newnode,int position);
 void swapnode(node *a,node *b);
 node popnode(node *array,int len);
+int nodelen(node *array);
+/*Declare the operation of edge*/
+void initedge(edge *newedge,node *a,node *b);
+void dedge(edge *x);
+/*Declare the operation of convex hull*/
+node *convexhull(node *array,int start,int end);
+node *mergehull(node *array1,node *array2);
+node *graham(node *array1,node *array2,int x,int y);
+
 /*Implement the operation of node*/
 node *initnode(int x,int y)
 {
 	node *newnode = (node*) malloc(sizeof(node));
 	newnode->x = x;
 	newnode->y = y;
+	newnode->next = NULL;
 	return newnode;
 }
 void dnode(node *x)
@@ -93,7 +104,10 @@ node popnode(node *array,int len)
 	}
 	return temp;
 }
-
+int nodelen(node *array)
+{
+	return (sizeof(&array)/sizeof(node));
+}
 /*Implement the operation of edge*/
 void initedge(edge *newedge,node *a,node *b)
 {
@@ -105,10 +119,57 @@ void dedge(edge *x)
 	free(x);
 }
 
+/*convex hull*/
+node *convexhull(node *array,int start,int end)
+{
+	node *tempr = (node*) malloc(sizeof(node));
+	node *templ = (node*) malloc(sizeof(node));
+	node *root = (node*) malloc(sizeof(node));
+	if(start == end){
+		root = array + start;
+	}
+	else if((start - end) > 0){
+		templ = convexhull(array,start,end/2);
+		tempr = convexhull(array,end/2+1,end);
+		root = mergehull(templ,tempr);
+	}
+	dnode(templ);
+	dnode(tempr);
+	return root;
+}
+
+node *mergehull(node *array1,node *array2)
+{
+	node *root = (node*) malloc(sizeof(node));
+	int lenarray1 = nodelen(array1);
+	int lenarray2 = nodelen(array2);
+	if(lenarray1 == 1 && lenarray2 == 1){
+		array1->next = array2;
+		root = array1;
+	}
+	else{
+		int wp = 0,x=0,y=0;
+		while(wp < lenarray1){
+			x += array1[wp].x;
+			y += array2[wp].y;
+			wp++;
+		}
+		/*Centroid of the node which in array1*/
+		x = x / lenarray1;
+		y = y / lenarray1;
+		root = graham(array1,array2,x,y);
+	}
+	return root;
+}
+node *graham(node *array1,node *array2,int x,int y)
+{
+	node *root = (node*) malloc(sizeof(node));
+	return root;
+}
 
 int main(){
 	/*nodenum = number of nodes; wp,fp = loop conditions; tx,ty = temporary of coordinates*/
-	int nodenum,wp,fp,tx,ty;
+	int nodenum,wp,tx,ty;
 	scanf("%d",&nodenum);
 	node input[nodenum];
 	wp = 0;

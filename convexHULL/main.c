@@ -12,17 +12,19 @@ typedef struct _edge{
 	struct _node *end;
 }edge;
 /*Declare the operation of node*/
-void initnode(node *newnode,int x,int y);
+node *initnode(int x,int y);
 void dnode(node *x);
 void sortnodebyx(node *array,int size);
 void insertnode(node *array,node *newnode,int position);
 void swapnode(node *a,node *b);
 node popnode(node *array,int len);
 /*Implement the operation of node*/
-void initnode(node *newnode,int x,int y)
+node *initnode(int x,int y)
 {
+	node *newnode = (node*) malloc(sizeof(node));
 	newnode->x = x;
 	newnode->y = y;
+	return newnode;
 }
 void dnode(node *x)
 {
@@ -33,14 +35,21 @@ void sortnodebyx(node *array,int size)
 	node heap[size];
 	int wp = 0;
 	while(wp < size){
-		insertnode(heap,&array[wp],wp+1);
+		insertnode(heap,&array[wp],wp);
+		wp++;
+
 	}
+
 	wp = 0;
-	while(wp < size){
-		array[wp] = popnode(heap,size-wp);
+	while(wp <= size){
+		node temp;
+		temp = popnode(heap,size-wp);
+		array[wp].x = temp.x;
+		array[wp].y = temp.y;
+		wp++;
 	}
 }
-void insertnode(node *array,node *newnode,int position)
+void insertnode(node *array,node *newnode,int position)								//initialize the node array to node heap by insert
 {
 	(array + position)->x = newnode->x;
 	(array + position)->y = newnode->y;
@@ -51,13 +60,14 @@ void insertnode(node *array,node *newnode,int position)
 }
 void swapnode(node *a,node *b)
 {
-	node *temp;
+	node *temp = (node*) malloc(sizeof(node));
 	temp->x = a->x;
 	temp->y = a->y;
 	a->x = b->x;
 	a->y = b->y;
 	b->x = temp->x;
 	b->y = temp->y;
+	free(temp);
 }
 node popnode(node *array,int len)
 {
@@ -109,7 +119,14 @@ int main(){
 		wp++;
 	}
 	wp = 0;
+	printf("before sort node by x\n");
+	while(wp < nodenum){
+		printf("input[%d] = (%d,%d)\n",wp,input[wp].x,input[wp].y);
+		wp++;
+	}
+	wp = 0;
 	sortnodebyx(input,nodenum);
+	printf("after sort node by x\n");
 	while(wp < nodenum){
 		printf("input[%d] = (%d,%d)\n",wp,input[wp].x,input[wp].y);
 		wp++;

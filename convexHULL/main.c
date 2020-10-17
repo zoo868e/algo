@@ -18,16 +18,13 @@ void insertnode(node *array,node *newnode,int position);
 void swapnode(node *a,node *b);
 node popnode(node *array,int len);
 int nodelen(node *array);
-node *nodeminy(node *array,int start,int end);
+node nodeminy(node *array,int start,int end);
 float slope(node *start,node *end);
 void insertnodebyslope(node *array,node *newnode,int position);
 node popnodebyslope(node *array,int len);
 int dire(node *a,node *b,node *c);
 /*Declare the operation of convex hull*/
-node *convexhull(node *array,int start,int end);
-node *mergehull(node *array1,node *array2);
-node *graham(node *array1,node *array2);
-
+void convexhull(node *array,int len);
 /*Implement the operation of node*/
 node *initnode(int x,int y)
 {
@@ -114,17 +111,15 @@ int nodelen(node *array)
 {
 	return (sizeof(&array)/sizeof(node));
 }
-node *nodeminy(node *array,int start,int end)
+node nodeminy(node *array,int start,int end)
 {		
-	node *templ = (node*) malloc(sizeof(node));
-	node *tempr = (node*) malloc(sizeof(node));
-	if(start == end)return array;
-	else {
-		templ = nodeminy(array,start,end/2);
-		tempr = nodeminy(array,end/2+1,end);
-		if(templ->y == tempr->y);
-		else templ = templ->y < tempr->y ? templ:tempr;
-	}
+	node templ;
+	node tempr;
+	if(start == end)return *array;
+	templ = nodeminy(array,start,end/2);
+	tempr = nodeminy(array,end/2+1,end);
+	if(templ.y == tempr.y);
+	else templ = templ.y < tempr.y ? templ:tempr;
 	return templ;
 }
 float slope(node *start,node *end)
@@ -168,120 +163,22 @@ node popnodebyslope(node *array,int len)
 	}
 	return temp;
 }
+/*calculate the three points in left turn or right turn*/
 int dire(node *a,node *b,node *c)
 {
 	return (b->x - a->x)*(c->y - a->y) - (b->y - a->y)*(c->x - a->x);
 }
 /*convex hull*/
-node *convexhull(node *array,int start,int end)
-{
-	node *tempr = (node*) malloc(sizeof(node));
-	node *templ = (node*) malloc(sizeof(node));
-	node *root = (node*) malloc(sizeof(node));
-	if(start == end){
-		root = array + start;
-	}
-	else if((start - end) > 0){
-		templ = convexhull(array,start,end/2);
-		tempr = convexhull(array,end/2+1,end);
-		root = mergehull(templ,tempr);
-	}
-	dnode(templ);
-	dnode(tempr);
-	return root;
-}
-
-node *mergehull(node *array1,node *array2)
+void convexhull(node *array,int len)
 {
 	node *root = (node*) malloc(sizeof(node));
-	int lenarray1 = nodelen(array1);
-	int lenarray2 = nodelen(array2);
-	if(lenarray1 == 1 && lenarray2 == 1){
-		array1->next = array2;
-		root = array1;
-	}
-	else{
-		int wp = 0,x=0,y=0;
-		while(wp < lenarray1){
-			x += array1[wp].x;
-			y += array2[wp].y;
-			wp++;
-		}
-		/*Centroid of the node which in array1*/
-		x = x / lenarray1;
-		y = y / lenarray1;
-		root = graham(array1,array2);
-	}
-	return root;
-}
-node *graham(node *array1,node *array2)
-{
-	node *root = (node*) malloc(sizeof(node));
-	node *left = (node*) malloc(sizeof(node));
-	node *right = (node*) malloc(sizeof(node));
-	left = nodeminy(array1,0,nodelen(array1)-1);
-	right = nodeminy(array2,0,nodelen(array2)-1);
-	root = left->y <= right->y ? left:right;
-	int wp = 0;
-	while(wp < nodelen(array1)){
-		array1[wp].slope = slope(root,&array1[wp]);
-		wp++;
-	}
-	wp = 0;
-	while(wp < nodelen(array2)){
-		array2[wp].slope = slope(root,&array2[wp]);
-		wp++;
-	}
-	int all = nodelen(array1) + nodelen(array2);
-	node allnodeheap[all],allnode[all];
-	wp = 0;
-	int lenarray1 = nodelen(array1);
-	int lenarray2 = nodelen(array2);
-	while(lenarray1 > 0){
-		insertnodebyslope(allnodeheap,&array1[lenarray1],wp);
-		wp++;
-		lenarray1--;
-	}
-	while(lenarray2 > 0){
-		insertnodebyslope(allnodeheap,&array2[lenarray2],wp);
-		wp++;
-		lenarray2--;
-	}
-	wp = 0;
-	while(wp <= all){
-		allnode[wp] = popnodebyslope(allnodeheap,all-wp);
-		wp++;
-	}
-	wp = 0;
-	node *temp = root;
-	node *next = temp->next;
-	while(wp <= all){
-		if(allnode[wp].slope < 0){
-			wp++;
-			continue;
-		}
-		else if(next == NULL){
-			next = &allnode[wp];
-			wp++;
-		}
-		else{
-			if(dire(temp,next,&allnode[wp]) == 0){
-				temp->next = &allnode[wp];
-				next = temp->next;
-				wp++;
-			}
-			else if(dire(temp,next,&allnode[wp]) > 0){
-				next->next = &allnode[wp];
-				temp = temp->next;
-				next = next->next;
-				wp++;
-			}
-			else {
-				wp++;
-			}
-		}
-	}
-	return root;
+	printf("arraylen = %d\n",len);
+	int wp,fp,fi,flag = 0,a,b,c,tc,ptc;
+	root = array;
+	/*step 1*/
+	/*step 2*/
+	/*step 3*/
+	/*step 4*/
 }
 
 
@@ -290,7 +187,6 @@ int main(){
 	int nodenum,wp,tx,ty;
 	scanf("%d",&nodenum);
 	node input[nodenum];
-	node *root = (node*) malloc(sizeof(node));
 	wp = 0;
 	while(wp < nodenum){
 		scanf("%d %d",&tx,&ty);
@@ -311,11 +207,12 @@ int main(){
 		printf("input[%d] = (%d,%d)\n",wp,input[wp].x,input[wp].y);
 		wp++;
 	}*/
-	root = convexhull(input,0,nodenum-1);
-	node *temp = root->next;
-	while(temp != NULL){
-		printf("(%d,%d)\n",temp->x,temp->y);
-		temp = temp->next;
+	convexhull(input,nodenum);
+	printf("before sort node by x\n");
+	while(wp < nodenum){
+		printf("input[%d] = (%d,%d)\n",wp,input[wp].x,input[wp].y);
+		wp++;
 	}
+
 	return 0;
 }

@@ -266,17 +266,17 @@ int dire(node *a,node *b,node *c)
 void convexhull(node *array,int len)
 {
 	node *root = convexhulll5(array,len);
-	printf("arraylen = %d\n",len);
+	//printf("arraylen = %d\n",len);
 	//int wp,fp,fi,flag = 0,a,b,c,tc,ptc;
 	//root = convexhulll5(array,len);
-	printf("we got convexhull!\n");
+	/*printf("we got convexhull!\n");
 	node *temp = root;
 	printf("convex root : (%d,%d)\n",temp->x,temp->y);
-	temp = temp->next;
-	while(temp != root){
+	temp = temp->next;*/
+	/*while(temp != root){
 		printf("next node : (%d,%d)\n",temp->x,temp->y);
 		temp = temp->next;
-	}
+	}*/
 	/*step 1*/
 	/*step 2*/
 	/*step 3*/
@@ -344,6 +344,13 @@ node *convexhulll5(node *array,int len)
 		}
 		sortnodebyslopeminheap(r,right);
 		sortnodebyslopeminheap(l,left);
+		printf("After sort by slope:\n");
+		for(ff = 0;ff < right;ff++){
+			printf("r[%d] : (%d,%d) slope = %f\n",ff,r[ff].x,r[ff].y,r[ff].slope);
+		}
+		for(ff = 0;ff < left;ff++){
+			printf("l[%d] : (%d,%d) slope = %f\n",ff,l[ff].x,l[ff].y,l[ff].slope);
+		}
 		node *temp = miny;
 		temp->next = &r[0];
 		for(ff = 1;ff < right;ff++){
@@ -428,11 +435,6 @@ int main(){
 		wp++;
 	}*/
 	convexhull(input,nodenum);
-	printf("before sort node by x\n");
-	while(wp < nodenum){
-		printf("input[%d] = (%d,%d)\n",wp,input[wp].x,input[wp].y);
-		wp++;
-	}
 
 	return 0;
 }
